@@ -17,12 +17,15 @@ class JwtCookieAuth
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            // parseToken is used to look for JWT token in header
-            // authenticate took the jwt value and verifies
-            if (! $user = JWTAuth::parseToken()->authenticate()) {
+            // parseToken read JWT token in request header
+            // authenticate decode token an fetch user and assign founded user to $user variable
+            /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+            $user = JWTAuth::parseToken()->authenticate();
+
+            if (!$user) {
                 return response()->json(['error' => 'User not found'], 401);
             }
-
+            // Set the current logged user as authenticated user with authenticate system guard
             auth()->guard('api')->setUser($user);
 
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {

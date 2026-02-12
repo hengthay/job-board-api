@@ -16,8 +16,12 @@ class AuthController extends Controller
                 'name' => "required|string|max:255",
                 'password' => "required|string",
             ]);
-            // Check if user exists
-            if (!$token = JWTAuth::attempt($credentials)) {
+            
+            // JWTAuth::attempt() check if user credential matching if so return true, otherwise false
+            // When user login success it generate token value and assign to $token variable.
+            $token = JWTAuth::attempt($credentials);
+            // If token not generate, mean user failed to login
+            if (!$token) {
                 return response()->json([
                     'status_code' => 'error',
                     'message' => 'Invalid credentials'

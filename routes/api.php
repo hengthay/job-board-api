@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware('jwt.cookie')->group(function () {
+Route::middleware(['jwt.cookie', 'admin'])->group(function () {
     Route::get('/users', [UserController::class, 'index']);
 });
 

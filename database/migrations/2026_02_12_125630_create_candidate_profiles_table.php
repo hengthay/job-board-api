@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('candidate_profiles', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string("title")->nullable();
-            $table->string("summary")->nullable();
+            $table->string("title");
+            $table->text("summary")->nullable();
             $table->string("location")->nullable();
-            $table->string("experience_years")->nullable();
+            $table->integer("experience_years")->nullable();
             $table->string("portfolio_url")->nullable();
             $table->string("linkedin_url")->nullable();
             $table->string("github_url")->nullable();

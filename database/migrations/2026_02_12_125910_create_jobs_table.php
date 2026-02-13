@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('requirements')->nullable();
             $table->json('benefits')->nullable();
             $table->string('location')->nullable();
-            $table->string('work_mode')->nullable();
+            $table->string('work_mode');
             $table->decimal('salary_min', 8, 2)->nullable();
             $table->decimal('salary_max', 8, 2)->nullable();
             $table->integer('vacancies'); // Available for the position

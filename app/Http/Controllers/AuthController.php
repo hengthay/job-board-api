@@ -79,6 +79,9 @@ class AuthController extends Controller
     }
     public function logout(Request $request) {
         try {
+            // This will validate token (expired, blacklisted, invalid, etc.)
+            JWTAuth::parseToken()->authenticate();
+
             // Get current token from user and invalid it for logout
             JWTAuth::invalidate(JWTAuth::getToken());
             // Return success message
@@ -86,6 +89,11 @@ class AuthController extends Controller
                 'status_code' => 'success',
                 'message' => 'Logout successful'
             ]);  
+        } catch (\Tymon\JWTAuth\Exceptions\TokenBlacklistedException $e) {
+            return response()->json([
+                'status_code' => 'failed',
+                'message' => 'Token is invalid'
+            ], 401);
         } catch (\Throwable $e) {
             return response()->json([
                 'status' => 500,

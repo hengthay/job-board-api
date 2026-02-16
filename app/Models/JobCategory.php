@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class JobCategory extends Model
 {
     protected $fillable = ['name'];
+
+    public function job() {
+        return $this->belongsTo(Job::class, 'job_category_id');
+    }
 }

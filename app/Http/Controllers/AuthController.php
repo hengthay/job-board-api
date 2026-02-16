@@ -33,7 +33,8 @@ class AuthController extends Controller
                 'message' => 'Login successful',
                 'data' => [
                     'user' => JWTAuth::user(),
-                    'bearer token type' => $token,
+                    'access_token' => $token,
+                    'token_type' => 'bearer'
                 ]
             ]);
         } catch (\Throwable $e) {

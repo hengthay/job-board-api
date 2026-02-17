@@ -22,8 +22,7 @@ class ResumeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => "required|integer",
-            "file_path" => "nullable|url",
+            "file_path" => "nullable|file",
             "file_name" => "nullable|string",
             "mime_type" => "nullable|string",
             "is_default" => "sometimes|boolean",

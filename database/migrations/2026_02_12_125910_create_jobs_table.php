@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->integer('job_category_id');
-            $table->integer('job_type_id');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('job_category_id');
+            $table->unsignedBigInteger('job_type_id');
             $table->string('title');
             $table->text('description')->nullable();
             $table->json('requirements')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('vacancies'); // Available for the position
             $table->date('deadline');
             $table->string('status')->default('Open');
-            $table->date('published')->nullable();
+            $table->date('published_at')->nullable();
             $table->date('closed_at')->nullable();
             $table->timestamps();
         });

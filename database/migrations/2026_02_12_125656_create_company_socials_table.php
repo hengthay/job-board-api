@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('company_socials', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
+            $table->unsignedBigInteger('company_id');
             $table->string('platform')->nullable(); // Facebook or Telegram. etc.
             $table->text('url')->nullable();
             $table->timestamps();

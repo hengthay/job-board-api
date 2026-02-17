@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('resumes', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('file_path')->nullable();
             $table->string('file_name')->nullable();
             $table->string('mime_type')->nullable();

@@ -22,10 +22,10 @@ class CandidateProfileRequest extends FormRequest
     public function rules(): array
     {   
         return [
-            "user_id" => "required|integer",
             "title" => "required|string|max:255",
+            "profile_image" => "nullable|image|mimes:jpg,jpeg,png,svg|max:2048",
             "summary" => "nullable|string",
-            "locatoin" => "nullable|string",
+            "location" => "nullable|string",
             "experience_years" => "nullable|integer",
             "portfolio_url" => "nullable|url",
             "linkedin_url" => "nullable|url",

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\JobCategoryController;
 use App\Http\Controllers\JobTypeController;
 use App\Http\Controllers\ResumesController;
@@ -29,12 +30,21 @@ Route::middleware(['jwt.cookie', 'admin'])->group(function () {
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'delete');
     });
-     Route::controller(ResumesController::class)->prefix('resumes')->group(function () {
+    Route::controller(ResumesController::class)->prefix('resumes')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
         Route::post('/', 'create');
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'delete');
+    });
+    Route::controller(CandidateProfileController::class)->prefix('profiles')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/admin/{id}', 'findProfile');
+        Route::get('/{id}', 'show');
+        Route::post('/', 'create');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
+        Route::delete('/admin/{id}', 'adminDelete');
     });
 });
 

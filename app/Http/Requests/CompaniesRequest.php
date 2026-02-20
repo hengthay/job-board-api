@@ -22,7 +22,6 @@ class CompaniesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => "required|integer",
             "name" => "required|string",
             "slug" => "nullable|string",
             "logo_path" => "nullable|image|mimes:jpg,jpeg,png,svg|max:2048",

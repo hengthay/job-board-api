@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\CompaniesController;
+use App\Http\Controllers\CompanySocialController;
 use App\Http\Controllers\JobCategoryController;
 use App\Http\Controllers\JobTypeController;
 use App\Http\Controllers\ResumesController;
@@ -50,6 +51,15 @@ Route::middleware(['jwt.cookie', 'admin'])->group(function () {
     Route::controller(CompaniesController::class)->prefix('companys')->group(function () {
         Route::get('/', 'index');
         Route::get('/admin/{id}', 'findCompany');
+        Route::get('/{id}', 'show');
+        Route::post('/', 'create');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
+        Route::delete('/admin/{id}', 'adminDelete');
+    });
+    Route::controller(CompanySocialController::class)->prefix('company-socials')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/admin/{id}', 'findCompanySocial');
         Route::get('/{id}', 'show');
         Route::post('/', 'create');
         Route::put('/{id}', 'update');

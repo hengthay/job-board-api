@@ -28,7 +28,7 @@ class CompanyMiddleware
         if(($user->role ?? null) !== 'employer') {
             return response()->json([
                 'message' => 'Forbidden - Employer only '
-            ], 401);
+            ], 403);
         }
         return $next($request);
     }

@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'jwt.cookie' => App\Http\Middleware\JwtCookieAuth::class,
             'admin' => App\Http\Middleware\AdminMiddleware::class,
             'employer' => App\Http\Middleware\CompanyMiddleware::class,
+            'role' => App\Http\Middleware\RoleMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

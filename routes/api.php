@@ -5,6 +5,7 @@ use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\CompanySocialController;
 use App\Http\Controllers\JobCategoryController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobTypeController;
 use App\Http\Controllers\ResumesController;
 use App\Http\Controllers\UserController;
@@ -15,7 +16,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware(['jwt.cookie', 'admin'])->group(function () {
+Route::middleware(['jwt.cookie'])->group(function () {
+
     Route::get('/users', [UserController::class, 'index']);
 
     Route::controller(JobCategoryController::class)->prefix('jobcategories')->group(function () {
@@ -65,6 +67,15 @@ Route::middleware(['jwt.cookie', 'admin'])->group(function () {
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'delete');
         Route::delete('/admin/{id}', 'adminDelete');
+    });
+    Route::controller(JobController::class)->prefix('jobs')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::post('/', 'create');
+        Route::put('/{id}', 'update')->middleware('role:employer');
+        Route::put('/admin/{id}', 'adminUpdate')->middleware('role:admin');
+        Route::delete('/{id}', 'delete')->middleware('role:employer');;
+        Route::delete('/admin/{id}', 'adminDelete')->middleware('role:admin');;
     });
 });
 

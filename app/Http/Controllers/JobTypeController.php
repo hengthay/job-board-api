@@ -45,7 +45,7 @@ class JobTypeController extends Controller
                 return $this->handleErrorResponse(null, "Failed to create Job Type!", 404);
             }
 
-            return $this->handleResponse($jobType, 'Job Category is successfully created!');
+            return $this->handleResponse($jobType, 'Job Type is successfully created!');
         } catch (\Throwable $e) {
             return $this->handleErrorResponse(null, $e->getMessage(), 500);
         }

@@ -12,4 +12,8 @@ class Companies extends Model
     public function companySocial() : HasMany {
         return $this->hasMany(CompanySocial::class, "company_id");
     }
+
+    public function jobs() : HasMany {
+        return $this->hasMany(Job::class, 'company_id');
+    }
 }

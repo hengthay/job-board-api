@@ -25,7 +25,7 @@ class JobRequest extends FormRequest
             "company_id" => "required|integer",
             "job_category_id" => "required|integer",
             "job_type_id" => "required|integer",
-            "title" => "required|integer",
+            "title" => "required|string",
             "description" => "nullable|string",
             "requirements" => "nullable|array",
             "benefits" => "nullable|array",
@@ -36,8 +36,8 @@ class JobRequest extends FormRequest
             "vacancies" => "required|integer",
             "deadline" => "required|date",
             "status" => "sometimes|string",
-            "published" => "nullable|date",
-            "closed_at" => "nullable|date|after_or_equal:published",
+            "published_at" => "nullable|date",
+            "closed_at" => "nullable|date|after_or_equal:published_at",
         ]; 
     }
 }

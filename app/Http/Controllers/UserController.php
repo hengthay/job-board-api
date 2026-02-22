@@ -11,7 +11,7 @@ class UserController extends Controller
         try {
             $users = User::where('is_active', 1)->get();
             
-            if(!$users) {
+            if($users->isEmpty()) {
                 return $this->handleErrorResponse(null, 'User is empty', 404);
             }
 

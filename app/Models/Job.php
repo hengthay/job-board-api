@@ -26,4 +26,8 @@ class Job extends Model
     public function company() : BelongsTo {
         return $this->belongsTo(Companies::class, "company_id");
     }
+
+    public function saveJob() {
+        return $this->hasMany(SaveJob::class, 'job_id');
+    }
 }

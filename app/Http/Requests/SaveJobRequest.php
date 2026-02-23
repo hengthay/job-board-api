@@ -22,7 +22,6 @@ class SaveJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => "required|integer",
             "job_id" => "required|integer",
         ];
     }

@@ -8,6 +8,7 @@ use App\Http\Controllers\JobCategoryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobTypeController;
 use App\Http\Controllers\ResumesController;
+use App\Http\Controllers\SaveJobController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +77,13 @@ Route::middleware(['jwt.cookie'])->group(function () {
         Route::put('/admin/{id}', 'adminUpdate')->middleware('role:admin');
         Route::delete('/{id}', 'delete')->middleware('role:employer');;
         Route::delete('/admin/{id}', 'adminDelete')->middleware('role:admin');;
+    });
+    Route::controller(SaveJobController::class)->prefix('save-jobs')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::post('/', 'create');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
     });
 });
 

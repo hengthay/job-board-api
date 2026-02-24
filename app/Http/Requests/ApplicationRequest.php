@@ -21,15 +21,20 @@ class ApplicationRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isMethod('post')) {
+            return [
+                'job_id' => 'required|integer|exists:jobs,id',
+                'resume_id' => 'required|integer|exists:resumes,id',
+                'cover_letter' => 'nullable|string',
+            ];
+        }
+
+        // update (PUT/PATCH)
         return [
-            "job_id" => "required|integer",
-            "user_id" => "required|integer",
-            "resume_id" => "required|integer",
-            "cover_letter" => "nullable|string",
-            "status" => "nullable|string",
-            "applied_at" => "nullable|date",
-            "reviewd_at" => "nullable|date",
-            "employer_note" => "nullable|string"
+            'cover_letter' => 'sometimes|nullable|string',
+            'status' => 'sometimes|string',
+            'reviewed_at' => 'sometimes|date',
+            'employer_note' => 'sometimes|nullable|string',
         ];
     }
 }

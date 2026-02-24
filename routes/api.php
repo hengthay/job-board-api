@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\CompaniesController;
@@ -79,6 +80,13 @@ Route::middleware(['jwt.cookie'])->group(function () {
         Route::delete('/admin/{id}', 'adminDelete')->middleware('role:admin');;
     });
     Route::controller(SaveJobController::class)->prefix('save-jobs')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::post('/', 'create');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
+    });
+    Route::controller(ApplicationController::class)->prefix('applications')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
         Route::post('/', 'create');

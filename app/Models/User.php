@@ -68,4 +68,8 @@ class User extends Authenticatable implements JWTSubject
     public function resume() : HasMany {
         return $this->hasMany(Resumes::class, 'user_id');
     }
+
+    public function application() : HasMany {
+        return $this->hasMany(Application::class, 'user_id');
+    }
 }

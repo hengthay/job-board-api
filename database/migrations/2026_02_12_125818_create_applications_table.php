@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('cover_letter')->nullable();
             $table->string('status')->nullable();
             $table->date('applied_at')->nullable();
-            $table->date('reviewd_at')->nullable();
+            $table->date('reviewed_at')->nullable();
             $table->text('employer_note')->nullable();
             $table->timestamps();
         });

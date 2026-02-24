@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Job extends Model
 {
@@ -27,7 +28,11 @@ class Job extends Model
         return $this->belongsTo(Companies::class, "company_id");
     }
 
-    public function saveJob() {
+    public function saveJob() : HasMany {
         return $this->hasMany(SaveJob::class, 'job_id');
+    }
+
+    public function application() : HasMany {
+        return $this->hasMany(Application::class, 'job_id');
     }
 }

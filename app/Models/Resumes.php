@@ -11,4 +11,8 @@ class Resumes extends Model
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function application() {
+        return $this->hasMany(Application::class, 'resume_id');
+    }
 }

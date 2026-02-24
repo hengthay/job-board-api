@@ -14,6 +14,7 @@ class ApplicationController extends Controller
         try {
             // Get current user
             $user = Auth::user();
+            // with method used to fetch the application, also fetch the related job, resume, user data and attach them to each application
             // Fetch by relationship table
             $query = Application::with([
                 'job:id,company_id,title,status',
@@ -22,8 +23,11 @@ class ApplicationController extends Controller
             ])->orderBy('id', 'desc');
             // If user role equal to employer
             if($user->role === 'employer') {
-                $query->whereHas('job.company', function($q) use ($user) {
-                    $q->where('user_id', $user->id);
+                // whereHas check if job exist then we check if company exist, if so we check which employer ownership.
+                $query->whereHas('job', function($q) use ($user) {
+                    $q->whereHas('company', function($q2) use ($user) {
+                        $q2->where('user_id', $user->id);
+                    });
                 });
             }elseif ($user->role !== 'admin') {
                 $query->where('user_id', $user->id);
@@ -126,12 +130,16 @@ class ApplicationController extends Controller
         try {
             $user = Auth::user();
             $role = strtolower(trim((string) $user->role));
+            // Filtering by application id to find application data
             $query = Application::where('id', $id);
 
             // Employer can only update applications for their own jobs
             if ($role === 'employer') {
-                $query->whereHas('job.company', function ($q) use ($user) {
-                    $q->where('user_id', $user->id);
+                // If job exist and we query another one in company if it exist we call by user_id to check which employer ownership
+                 $query->whereHas('job', function ($q) use ($user) {
+                    $q->whereHas('company', function ($q2) use ($user) {
+                        $q2->where('user_id', $user->id);
+                    });
                 });
             } elseif ($role === 'user') {
                 // Candidate can only update own application

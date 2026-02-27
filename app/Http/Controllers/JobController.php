@@ -11,7 +11,13 @@ class JobController extends Controller
 {
     public function index() {
         try {
-            $jobs = Job::orderBy('id', 'asc')->get();
+            $jobs = Job::with([
+                        'company:id,user_id,name',
+                        'jobCategory:id,name',
+                        'jobType:id,name',
+                    ])->orderBy('id', 'asc')->get();
+
+            // $jobs = Job::orderBy('id', 'asc')->get();
 
             if($jobs->isEmpty()) {
                 return $this->handleErrorResponse(null, 'All job is currently empty!');
@@ -24,7 +30,11 @@ class JobController extends Controller
     }
     public function show($id) {
         try {
-            $job = Job::find($id);
+            $job = Job::with([
+                        'company:id,user_id,name',
+                        'jobCategory:id,name',
+                        'jobType:id,name',
+                    ])->find($id);
 
             if (!$job) {
                 return $this->handleErrorResponse(null, "Job with ID:{$id} is not found!");

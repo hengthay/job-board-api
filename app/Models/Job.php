@@ -16,6 +16,8 @@ class Job extends Model
         "benefits" => "array",
     ];
 
+    protected $with = ['company', 'jobCategory', 'jobType'];
+
     public function jobCategory() : BelongsTo {
         return $this->belongsTo(JobCategory::class, 'job_category_id');
     }

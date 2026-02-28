@@ -12,7 +12,8 @@ class CompaniesController extends Controller
 {
     public function index() {
         try {
-            $companies = Companies::orderBy('id', 'asc')->get();
+            $userId = Auth::user()->id;
+            $companies = Companies::where('user_id', $userId)->orderBy('id', 'asc')->get();
 
             if ($companies->isEmpty()) {
                 return $this->handleErrorResponse(null, "All Companies is empty!", 404);
@@ -26,7 +27,9 @@ class CompaniesController extends Controller
 
     public function findCompany($id) {
         try {
+            $userId = Auth::user()->id;
             $company = Companies::where('id', $id)
+                            ->where('user_id', $id)
                             ->orderBy('id', 'asc')
                             ->get();
 

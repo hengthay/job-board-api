@@ -35,11 +35,29 @@ class DatabaseSeeder extends Seeder
                 'email' => 'test@gmail.com',
                 'role' => 'user',
                 'password' => Hash::make(env('TEST_PASS')),
-            ]
+            ],
+            [
+                'name' => 'employer2',
+                'email' => 'employer2@gmail.com',
+                'role' => 'employer',
+                'password' => Hash::make(env('EMPLOYER_PASS')),
+            ],
         ];
 
         foreach($users as $key => $value) {
             User::factory()->create($value);
         }
+
+        $this->call([
+            ApplicationSeeder::class,
+            CandidateProfileSeeder::class,
+            CompaniesSeeder::class,
+            CompanySocialSeeder::class,
+            JobSeeder::class,
+            JobCategorySeeder::class,
+            JobTypeSeeder::class,
+            ResumesSeeder::class,
+            SaveJobSeeder::class,
+        ]);
     }
 }

@@ -12,7 +12,27 @@ class CandidateProfileController extends Controller
 {
     public function index () {
         try {
-            $profiles = CandidateProfile::orderBy('id', 'asc')->get();
+            $userId = Auth::user()->id;
+
+            $profiles = CandidateProfile::with([
+                'user:id,name,email,role'
+            ])->where('user_id', $userId)->get();
+
+            if($profiles->isEmpty()) {
+                return $this->handleErrorResponse(null, "Candidate Profile is not found!", 404);
+            }
+
+            return $this->handleResponse($profiles, "Candidate profile is successfully received!");
+        } catch (\Throwable $e) {
+            return $this->handleErrorResponse(null, $e->getMessage(), 500);
+        }
+    }
+
+    public function adminIndex () {
+        try {
+            $profiles = CandidateProfile::with([
+                'user'
+            ])->get();
 
             if($profiles->isEmpty()) {
                 return $this->handleErrorResponse(null, "All Candidate Profile is not found!", 404);
@@ -26,7 +46,9 @@ class CandidateProfileController extends Controller
 
     public function findProfile($id) {
         try {
-            $profile = CandidateProfile::where('id', $id)->get();
+            $profile = CandidateProfile::with([
+                'user'
+            ])->where('id', $id)->get();
 
             if($profile->isEmpty()) {
                 return $this->handleErrorResponse(null, "Candidate Profile with ID:" . $id . " is not found!", 404);
@@ -41,9 +63,12 @@ class CandidateProfileController extends Controller
     public function show ($id) {
         try {
             $userId = Auth::user()->id;
-            $profile = CandidateProfile::where('user_id', $userId)
-                        ->where('id', $id)
-                        ->get();
+            
+            $profile = CandidateProfile::with([
+                'user:id,name,email,role'
+            ])->where('user_id', $userId)
+                ->where('id', $id)
+                ->get();
 
             if($profile->isEmpty()) {
                 return $this->handleErrorResponse(null, "Candidate Profile with ID:" . $id . " is not found!", 404);

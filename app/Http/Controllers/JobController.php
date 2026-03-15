@@ -6,13 +6,14 @@ use App\Http\Requests\JobRequest;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class JobController extends Controller
 {
     public function index() {
         try {
             $jobs = Job::with([
-                        'company:id,user_id,name',
+                        'company:id,user_id,name,logo_path',
                         'jobCategory:id,name',
                         'jobType:id,name',
                     ])->orderBy('id', 'asc')->get();
@@ -28,10 +29,33 @@ class JobController extends Controller
             return $this->handleErrorResponse(null, $e->getMessage(), 500);
         }
     }
+
+    public function jobPosting() {
+        try {
+
+            $user = Auth::user();
+            $company = $user->company;
+            
+            // Then get jobs belonging to that company
+            $jobs = Job::with(['company', 'jobCategory', 'jobType'])
+                        ->where('company_id', $company->id)
+                        ->orderBy('id', 'asc')
+                        ->get();
+
+
+            if($jobs->isEmpty()) {
+                return $this->handleErrorResponse(null, 'All job posting is currently empty!');
+            }
+
+            return $this->handleResponse($jobs, 'All Job posting is successfully received!');
+        } catch (\Throwable $e) {
+            return $this->handleErrorResponse(null, $e->getMessage(), 500);
+        }
+    }
     public function show($id) {
         try {
             $job = Job::with([
-                        'company:id,user_id,name',
+                        'company:id,user_id,name,logo_path',
                         'jobCategory:id,name',
                         'jobType:id,name',
                     ])->find($id);
@@ -47,8 +71,20 @@ class JobController extends Controller
     }
     public function create(JobRequest $request) {
         try {
+            $user = Auth::user();
+            // \Log::info('Checking User:', ['id' => $user->id, 'has_company' => $user->company]);    
+            $company = $user->company;
+
+            if(!$company) {
+                return $this->handleErrorResponse(null, "You must create a company profile first.", 403);
+            }
+            // $data = $request->validated();
+            // Log::debug('data', [
+            //     'data' => $data
+            // ]);
+
             $job = Job::create([
-                "company_id" => $request->company_id,
+                "company_id" => $company->id,
                 "job_category_id" => $request->job_category_id,
                 "job_type_id" => $request->job_type_id,
                 "title" => $request->title,

@@ -30,7 +30,6 @@ class CompaniesRequest extends FormRequest
             "company_size" => "nullable|string",
             "location" => "nullable|string",
             "description" => "nullable|string",
-            "verified_at" => "nullable|date"
         ];
     }
 }

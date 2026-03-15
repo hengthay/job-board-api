@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -17,6 +18,7 @@ class AuthController extends Controller
                 'password' => "required|string",
             ]);
             
+            Log::debug('user logged', ['user' => $credentials]);
             // JWTAuth::attempt() check if user credential matching if so return true, otherwise false
             // When user login success it generate token value and assign to $token variable.
             $token = JWTAuth::attempt($credentials);
@@ -51,21 +53,29 @@ class AuthController extends Controller
     public function register(Request $request) {
         try {
             // Get uset input data and validate
-            $request->validate([
+            $data = $request->validate([
                 'name' => "required|string|max:255",
                 'email' => "required|string",
                 'password' => "required|string",
+                'role' => "required|string"
             ]);
+            // Debug incoming data
+            Log::debug('register data', [
+                'data' => $data
+            ]);
+
             // Create new user and hash password
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'role' => $request->role
             ]);
             // Return success message
             return response()->json([
                 'status_code' => 'success',
                 'message' => 'Register successful',
+                'data' => $user
             ]);
         } catch (\Throwable $e) {
             return response()->json([

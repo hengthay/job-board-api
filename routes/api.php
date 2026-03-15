@@ -11,26 +11,26 @@ use App\Http\Controllers\JobTypeController;
 use App\Http\Controllers\ResumesController;
 use App\Http\Controllers\SaveJobController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-// Public Routes for unauthenticated user to see job posting offer
-Route::get('/jobs', [JobController::class, 'index']);
-Route::get('/jobs/{id}', [JobController::class, 'show']);
+// Check Authentication
+Route::middleware(['jwt.cookie'])->get('/check-auth', function () {
+    return response()->json([
+        "status" => true
+    ]);
+});
+
 Route::middleware(['jwt.cookie'])->group(function () {
 
     // Shared authenticated reads
     Route::get('/applications', [ApplicationController::class, 'index']);
     Route::get('/applications/{id}', [ApplicationController::class, 'show']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/jobcategories', [JobCategoryController::class, 'index']);
-    Route::get('/jobcategories/{id}', [JobCategoryController::class, 'show']);
-    Route::get('/jobtypes', [JobTypeController::class, 'index']);
-    Route::get('/jobtypes/{id}', [JobTypeController::class, 'show']);
+    Route::get('/my-user', [UserController::class, 'getIndividualUser']);
 
     // User routes
     Route::middleware('role:user')->group(function() {
@@ -80,6 +80,8 @@ Route::middleware(['jwt.cookie'])->group(function () {
         });
     
         Route::controller(JobController::class)->prefix('jobs')->group(function () {
+            Route::get('/all-postings', 'jobPosting');
+
             Route::post('/', 'create');
             Route::put('/{id}', 'update');
             Route::delete('/{id}', 'delete');
@@ -95,9 +97,9 @@ Route::middleware(['jwt.cookie'])->group(function () {
         Route::put('/applications/{id}', [ApplicationController::class, 'update']);
         Route::delete('/applications/{id}', [ApplicationController::class, 'delete']);
     });
-
+    
     // Admin routes
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('/users',[UserController::class, 'index']);
 
         Route::controller(JobTypeController::class)->prefix('jobtypes')->group(function () {
@@ -106,33 +108,42 @@ Route::middleware(['jwt.cookie'])->group(function () {
             Route::delete('/{id}', 'delete');
         });
 
+        Route::controller(CandidateProfileController::class)->prefix('profiles')->group(function () {
+            Route::get('/', 'adminIndex');
+            Route::get('/{id}', 'findProfile');
+            Route::delete('/{id}', 'adminDelete');
+        });
+
+        Route::controller(CompaniesController::class)->prefix('companies')->group(function () {
+            Route::get('/', 'adminIndex');
+            Route::get('/{id}', 'findCompany');
+            Route::delete('/{id}', 'adminDelete');
+        });
+
         Route::controller(JobCategoryController::class)->prefix('jobcategories')->group(function () {
             Route::post('/', 'create');
             Route::put('/{id}', 'update');
             Route::delete('/{id}', 'delete');
         });
 
-        Route::controller(CandidateProfileController::class)->prefix('profiles')->group(function () {
-            Route::get('/admin/{id}', 'findProfile');
-            Route::delete('/admin//{id}', 'adminDelete');
-        });
-
-        Route::controller(CompaniesController::class)->prefix('companies')->group(function () {
-            Route::get('/admin/{id}', 'findCompany');
-            Route::delete('/admin//{id}', 'adminDelete');
-        });
-
         Route::controller(CompanySocialController::class)->prefix('company-socials')->group(function () {
-            Route::get('/admin/{id}', 'findCompanySocial');
-            Route::delete('/admin/{id}', 'adminDelete');
+            Route::get('/{id}', 'findCompanySocial');
+            Route::delete('/{id}', 'adminDelete');
         });
 
         Route::controller(JobController::class)->prefix('jobs')->group(function () {
-            Route::put('/admin/{id}', 'adminUpdate');
-            Route::delete('/admin/{id}', 'adminDelete');
+            Route::put('/{id}', 'adminUpdate');
+            Route::delete('/{id}', 'adminDelete');
         });
     });
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+// Public Routes for unauthenticated user to see job posting offer
+Route::get('/jobs', [JobController::class, 'index']);
+Route::get('/jobs/{id}', [JobController::class, 'show']);
+Route::get('/jobcategories', [JobCategoryController::class, 'index']);
+Route::get('/jobcategories/{id}', [JobCategoryController::class, 'show']);
+Route::get('/jobtypes', [JobTypeController::class, 'index']);
+Route::get('/jobtypes/{id}', [JobTypeController::class, 'show']);

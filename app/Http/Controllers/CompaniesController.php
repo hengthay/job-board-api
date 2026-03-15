@@ -13,13 +13,34 @@ class CompaniesController extends Controller
     public function index() {
         try {
             $userId = Auth::user()->id;
-            $companies = Companies::where('user_id', $userId)->orderBy('id', 'asc')->get();
+
+            $companies = Companies::with([
+                'user:id,name,email,role',
+                'companySocial'
+            ])->where('user_id', $userId)
+                ->get();
+
+            if ($companies->isEmpty()) {
+                return $this->handleErrorResponse(null, "Companies is empty!", 404);
+            }
+
+            return $this->handleResponse($companies, "Companies is successfully received!");
+        } catch (\Throwable $e) {
+            return $this->handleErrorResponse(null, $e->getMessage(), 500);
+        }
+    }
+
+    public function adminIndex() {
+        try {
+            $companies = Companies::with([
+                'user:id,name,email,role'
+            ])->orderBy('id', 'asc')->get();
 
             if ($companies->isEmpty()) {
                 return $this->handleErrorResponse(null, "All Companies is empty!", 404);
             }
 
-            return $this->handleResponse($companies, "All Companies is successfully received!");
+            return $this->handleResponse($companies, "All Companies is successfully received by admin!");
         } catch (\Throwable $e) {
             return $this->handleErrorResponse(null, $e->getMessage(), 500);
         }
@@ -27,17 +48,17 @@ class CompaniesController extends Controller
 
     public function findCompany($id) {
         try {
-            $userId = Auth::user()->id;
-            $company = Companies::where('id', $id)
-                            ->where('user_id', $id)
-                            ->orderBy('id', 'asc')
-                            ->get();
+            $company = Companies::with([
+                'user'
+            ])->where('id', $id)
+                ->orderBy('id', 'asc')
+                ->get();
 
             if ($company->isEmpty()) {
-                return $this->handleErrorResponse(null, "Company with ID:{$id} is not found!", 404);
+                return $this->handleErrorResponse(null, "Company with ID:{$id} is not found by admin!", 404);
             }
 
-            return $this->handleResponse($company, "Company with ID:{$id} is successfully received!");
+            return $this->handleResponse($company, "Company with ID:{$id} is successfully received by admin!");
         } catch (\Throwable $e) {
             return $this->handleErrorResponse(null, $e->getMessage(), 500);
         }
@@ -46,9 +67,12 @@ class CompaniesController extends Controller
     public function show($id) {
         try {
             $userId = Auth::user()->id;
-            $company = Companies::where('user_id', $userId)
-                            ->where('id', $id)
-                            ->first();
+
+            $company = Companies::with([
+                'user:id,name,email,role'
+            ])->where('user_id', $userId)
+                ->where('id', $id)
+                ->first();
             
             if (!$company) {
                 return $this->handleErrorResponse(null, "Company with ID:{$id} is not found!", 404);
@@ -79,7 +103,6 @@ class CompaniesController extends Controller
                 "company_size" => $request->company_size,
                 "location" => $request->location,
                 "description" => $request->description,
-                "verified_at" => $request->verified_at
             ]);
 
             if (!$company) {
@@ -104,8 +127,8 @@ class CompaniesController extends Controller
 
             if ($request->hasFile('logo_path')) {
 
-                if ($request->logo_path && Storage::disk('public')->exists($request->logo_path)) {
-                    Storage::disk('public')->delete($request->logo_path);
+                if ($company->logo_path && Storage::disk('public')->exists($company->logo_path)) {
+                    Storage::disk('public')->delete($company->logo_path);
                 }
 
                 $imagePath = $request->file('logo_path')->store('companies', 'public');
@@ -115,13 +138,12 @@ class CompaniesController extends Controller
                 "user_id" => $userId,
                 "name" => $request->name,
                 "slug" => $request->slug,
-                "logo_path" => $imagePath,
+                "logo_path" => $imagePath ?? $company->logo_path,
                 "website_url" => $request->website_url,
                 "industry" => $request->industry,
                 "company_size" => $request->company_size,
                 "location" => $request->location,
                 "description" => $request->description,
-                "verified_at" => $request->verified_at
             ]);
 
             return $this->handleResponse($company, "Company is updated successfully!");

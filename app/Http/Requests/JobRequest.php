@@ -22,7 +22,7 @@ class JobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "company_id" => "required|integer",
+            "company_id" => "sometimes|integer",
             "job_category_id" => "required|integer",
             "job_type_id" => "required|integer",
             "title" => "required|string",

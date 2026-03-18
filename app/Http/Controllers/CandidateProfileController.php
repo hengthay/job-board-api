@@ -15,7 +15,8 @@ class CandidateProfileController extends Controller
             $userId = Auth::user()->id;
 
             $profiles = CandidateProfile::with([
-                'user:id,name,email,role'
+                'user:id,name,email,role',
+                'resumes'
             ])->where('user_id', $userId)->get();
 
             if($profiles->isEmpty()) {
@@ -31,7 +32,8 @@ class CandidateProfileController extends Controller
     public function adminIndex () {
         try {
             $profiles = CandidateProfile::with([
-                'user'
+                'user',
+                'resumes'
             ])->get();
 
             if($profiles->isEmpty()) {
@@ -47,7 +49,8 @@ class CandidateProfileController extends Controller
     public function findProfile($id) {
         try {
             $profile = CandidateProfile::with([
-                'user'
+                'user',
+                'resumes'
             ])->where('id', $id)->get();
 
             if($profile->isEmpty()) {
@@ -65,12 +68,13 @@ class CandidateProfileController extends Controller
             $userId = Auth::user()->id;
             
             $profile = CandidateProfile::with([
-                'user:id,name,email,role'
+                'user:id,name,email,role',
+                'defaultResume'
             ])->where('user_id', $userId)
                 ->where('id', $id)
-                ->get();
+                ->first();
 
-            if($profile->isEmpty()) {
+            if(!$profile) {
                 return $this->handleErrorResponse(null, "Candidate Profile with ID:" . $id . " is not found!", 404);
             }
 
@@ -98,7 +102,7 @@ class CandidateProfileController extends Controller
                 "experience_years" => $request->experience_years,
                 "portfolio_url" => $request->portfolio_url,
                 "linkedin_url" => $request->linkedin_url,
-                "github_url" => $request->github_url
+                "github_url" => $request->github_url,
             ]);
 
             if(!$profile) {
@@ -138,7 +142,7 @@ class CandidateProfileController extends Controller
                 "experience_years" => $request->experience_years,
                 "portfolio_url" => $request->portfolio_url,
                 "linkedin_url" => $request->linkedin_url,
-                "github_url" => $request->github_url
+                "github_url" => $request->github_url,
             ]);
 
             return $this->handleResponse($profile, "Candidate profile is successfully updated!");

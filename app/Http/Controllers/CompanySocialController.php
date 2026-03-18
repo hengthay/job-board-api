@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanySocialRequest;
+use App\Models\Companies;
 use App\Models\CompanySocial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CompanySocialController extends Controller
 {
@@ -50,8 +53,21 @@ class CompanySocialController extends Controller
 
     public function create(CompanySocialRequest $request) {
         try {
+
+            $userId = Auth::user()->id;
+
+            $company = Companies::where('user_id', $userId)->first();
+
+            Log::debug('company detail', [
+                'company' => $company
+            ]);
+
+            if(!$company) {
+                return $this->handleErrorResponse(null, "No company found for this user.", 404);
+            }
+
             $companySocial = CompanySocial::create([
-                "company_id" => $request->company_id,
+                "company_id" => $company->id,
                 "platform" => $request->platform,
                 "url" => $request->url
             ]);
@@ -69,13 +85,24 @@ class CompanySocialController extends Controller
     public function update(CompanySocialRequest $request, $id) {
         try {
             $companySocial = CompanySocial::find($id);
+            $userId = Auth::user()->id;
+
+            $company = Companies::where('user_id', $userId)->first();
+
+            Log::debug('company detail', [
+                'company' => $company
+            ]);
+
+            if(!$company) {
+                return $this->handleErrorResponse(null, "No company found for this user.", 404);
+            }
 
             if(!$companySocial) {
                 return $this->handleErrorResponse(null, "Company Social with ID:{$id} is not found to updated!", 404);
             }
 
             $companySocial->update([
-                "company_id" => $request->company_id,
+                "company_id" => $company->id,
                 "platform" => $request->platform,
                 "url" => $request->url
             ]);

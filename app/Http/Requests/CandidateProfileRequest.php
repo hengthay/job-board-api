@@ -29,7 +29,7 @@ class CandidateProfileRequest extends FormRequest
             "experience_years" => "nullable|integer",
             "portfolio_url" => "nullable|url",
             "linkedin_url" => "nullable|url",
-            "github_url" => "nullable|url"
+            "github_url" => "nullable|url",
         ];
     }
 }

@@ -15,4 +15,8 @@ class Resumes extends Model
     public function application() {
         return $this->hasMany(Application::class, 'resume_id');
     }
+
+    public function candidateProfile() {
+        return $this->hasOne(CandidateProfile::class, 'resume_id');
+    }
 }

@@ -22,7 +22,6 @@ class CompanySocialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "company_id" => "required|integer",
             "platform" => "nullable|string",
             "url" => "nullable|url",
         ];

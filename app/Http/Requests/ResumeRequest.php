@@ -22,9 +22,7 @@ class ResumeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "file_path" => "nullable|file",
-            "file_name" => "nullable|string",
-            "mime_type" => "nullable|string",
+            "file_path" => "nullable|file|mimes:doc,docx,pdf|max:2048",
             "is_default" => "sometimes|boolean",
         ];
     }

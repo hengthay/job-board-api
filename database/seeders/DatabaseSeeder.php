@@ -49,15 +49,17 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call([
-            ApplicationSeeder::class,
-            CandidateProfileSeeder::class,
-            CompaniesSeeder::class,
-            CompanySocialSeeder::class,
-            JobSeeder::class,
             JobCategorySeeder::class,
             JobTypeSeeder::class,
+            CompaniesSeeder::class,
+            
+            CandidateProfileSeeder::class,
+            CompanySocialSeeder::class,
+            JobSeeder::class,
+            
             ResumesSeeder::class,
             SaveJobSeeder::class,
+            ApplicationSeeder::class,
         ]);
     }
 }

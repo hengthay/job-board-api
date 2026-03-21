@@ -7,6 +7,7 @@ use App\Models\Application;
 use App\Models\Job;
 use App\Models\Resumes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationController extends Controller
 {
@@ -18,7 +19,7 @@ class ApplicationController extends Controller
             // Fetch by relationship table
             $query = Application::with([
                 'job:id,company_id,title,status',
-                'resume:id,user_id,file_name',
+                'resume:id,user_id,file_name,file_path',
                 'user:id,name,email'
             ])->orderBy('id', 'desc');
             // If user role equal to employer
@@ -52,7 +53,7 @@ class ApplicationController extends Controller
             // Fetch by relationship table
             $query = Application::with([
                 'job:id,company_id,title,status',
-                'resume:id,user_id,file_name',
+                'resume:id,user_id,file_name,file_path',
                 'user:id,name,email'
             ])->where('id', $id);
             // If user role equal to employer
@@ -129,6 +130,11 @@ class ApplicationController extends Controller
     public function update(ApplicationRequest $request, $id) {
         try {
             $user = Auth::user();
+
+            Log::debug('Current User', [
+                'user' => $user
+            ]);
+            
             $role = strtolower(trim((string) $user->role));
             // Filtering by application id to find application data
             $query = Application::where('id', $id);
@@ -145,7 +151,7 @@ class ApplicationController extends Controller
                 // Candidate can only update own application
                 $query->where('user_id', $user->id);
             }
-
+            
             $application = $query->first();
 
             if (!$application) {

@@ -12,6 +12,7 @@ class SaveJobController extends Controller
         try {
             $userId = Auth::user()->id;
             $saveJobs = SaveJob::where('user_id', $userId)
+                        ->where('is_active', 1)
                         ->get();
 
             if ($saveJobs->isEmpty()) {
@@ -29,6 +30,7 @@ class SaveJobController extends Controller
             $userId = Auth::user()->id;
             $saveJob = SaveJob::where('id', $id)
                                 ->where('user_id', $userId)
+                                ->where('is_active', 1)
                                 ->first();
             if(!$saveJob) {
                 return $this->handleErrorResponse(null, "Save Job with ID:{$id} is not found!", 404);
@@ -43,6 +45,7 @@ class SaveJobController extends Controller
     public function create(SaveJobRequest $request) {
         try {
             $userId = Auth::user()->id;
+
             $saveJob = SaveJob::create([
                 "user_id" => $userId,
                 "job_id" => $request->job_id,
@@ -85,13 +88,16 @@ class SaveJobController extends Controller
             $userId = Auth::user()->id;
             $saveJob = SaveJob::where('id', $id)
                                 ->where('user_id', $userId)
+                                ->where('is_active', 1)
                                 ->first();
             
             if (!$saveJob) {
                 return $this->handleErrorResponse(null, "Save Job not found to deleted!", 404);
             }
 
-            $saveJob->delete();
+            $saveJob->update([
+                'is_active' => 0
+            ]);
             
             return $this->handleResponse(null, "Save Job is successfully deleted!");
         } catch (\Throwable $e) {

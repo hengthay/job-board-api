@@ -11,7 +11,10 @@ class SaveJobController extends Controller
     public function index() {
         try {
             $userId = Auth::user()->id;
-            $saveJobs = SaveJob::where('user_id', $userId)
+
+            $saveJobs = SaveJob::with([
+                        'job'
+                        ])->where('user_id', $userId)
                         ->where('is_active', 1)
                         ->get();
 
@@ -28,7 +31,7 @@ class SaveJobController extends Controller
     public function show($id) {
         try {
             $userId = Auth::user()->id;
-            $saveJob = SaveJob::where('id', $id)
+            $saveJob = SaveJob::with(['job'])->where('id', $id)
                                 ->where('user_id', $userId)
                                 ->where('is_active', 1)
                                 ->first();
@@ -45,17 +48,31 @@ class SaveJobController extends Controller
     public function create(SaveJobRequest $request) {
         try {
             $userId = Auth::user()->id;
+            
+            // Check if that job already exists
+            $existing = SaveJob::where('user_id', $userId)
+                                ->where('job_id', $request->job_id)
+                                ->first();
+            // If check exist and is_active equal 1
+            if($existing && $existing->is_active == 1) {
+                return $this->handleResponse($existing, "Job is already in your favorites!");
+            }
 
-            $saveJob = SaveJob::create([
+            $saveJob = SaveJob::updateOrCreate([
                 "user_id" => $userId,
                 "job_id" => $request->job_id,
+            ], [
+                "is_active" => 1
             ]);
 
             if(!$saveJob) {
                 return $this->handleErrorResponse(null, "Failed to created Save Job!");
             }
 
-            return $this->handleResponse($saveJob, "Save Job is successfully created!");
+            // Message to response to determine if user restored job or fresh save
+            $message = $existing ? "Job restored to favorites successfully!" : "Save Job is successfully created!";
+            
+            return $this->handleResponse($saveJob, $message);
         } catch (\Throwable $e) {
             return $this->handleErrorResponse(null, $e->getMessage(), 500);
         }

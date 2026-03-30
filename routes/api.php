@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CandidateProfileController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\CompanySocialController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobCategoryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobTypeController;
@@ -101,6 +102,7 @@ Route::middleware(['jwt.cookie'])->group(function () {
     // Admin routes
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('/users',[UserController::class, 'index']);
+        Route::get('/dashboard-stat', [DashboardController::class, 'getStatData']);
 
         Route::controller(JobTypeController::class)->prefix('jobtypes')->group(function () {
             Route::post('/', 'create');

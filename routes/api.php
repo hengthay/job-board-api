@@ -101,8 +101,14 @@ Route::middleware(['jwt.cookie'])->group(function () {
     
     // Admin routes
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-        Route::get('/users',[UserController::class, 'index']);
         Route::get('/dashboard-stat', [DashboardController::class, 'getStatData']);
+
+        Route::controller(UserController::class)->prefix('users')->group(function () {
+            Route::get('/', 'index');
+            Route::put('/{id}', 'updateUser');
+            Route::patch('/{id}', 'updateUserRole');
+            Route::delete('/{id}', 'removeUser');
+        });
 
         Route::controller(JobTypeController::class)->prefix('jobtypes')->group(function () {
             Route::post('/', 'create');

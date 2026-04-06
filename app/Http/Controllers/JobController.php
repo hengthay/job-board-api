@@ -162,6 +162,10 @@ class JobController extends Controller
             $role = strtolower(trim((string) $user->role));
             $query = Job::where('id', $id);
 
+            Log::debug('Job', [
+                'Job' => $query
+            ]);
+
             // Only admin can access it
             if ($role !== 'admin') {
                 $query->whereHas('company', function ($q) use ($user) {
@@ -176,7 +180,6 @@ class JobController extends Controller
             }
 
             $job->update([
-                "company_id" => $request->company_id,
                 "job_category_id" => $request->job_category_id,
                 "job_type_id" => $request->job_type_id,
                 "title" => $request->title,

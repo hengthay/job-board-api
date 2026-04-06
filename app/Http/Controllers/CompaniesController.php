@@ -52,9 +52,9 @@ class CompaniesController extends Controller
                 'user'
             ])->where('id', $id)
                 ->orderBy('id', 'asc')
-                ->get();
+                ->first();
 
-            if ($company->isEmpty()) {
+            if (!$company) {
                 return $this->handleErrorResponse(null, "Company with ID:{$id} is not found by admin!", 404);
             }
 

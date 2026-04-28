@@ -105,6 +105,7 @@ Route::middleware(['jwt.cookie'])->group(function () {
 
         Route::controller(UserController::class)->prefix('users')->group(function () {
             Route::get('/', 'index');
+            Route::get('/{id}', 'show');
             Route::put('/{id}', 'updateUser');
             Route::patch('/{id}', 'updateUserRole');
             Route::delete('/{id}', 'removeUser');
@@ -125,6 +126,7 @@ Route::middleware(['jwt.cookie'])->group(function () {
         Route::controller(CompaniesController::class)->prefix('companies')->group(function () {
             Route::get('/', 'adminIndex');
             Route::get('/{id}', 'findCompany');
+            Route::put('/{id}', 'adminUpdate');
             Route::delete('/{id}', 'adminDelete');
         });
 
@@ -135,6 +137,7 @@ Route::middleware(['jwt.cookie'])->group(function () {
         });
 
         Route::controller(CompanySocialController::class)->prefix('company-socials')->group(function () {
+            Route::get('/', 'adminIndex');
             Route::get('/{id}', 'findCompanySocial');
             Route::delete('/{id}', 'adminDelete');
         });

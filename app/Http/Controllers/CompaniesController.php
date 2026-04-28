@@ -152,6 +152,24 @@ class CompaniesController extends Controller
         }
     }
 
+    public function adminUpdate(Request $request, $id) {
+        try {
+            $company = Companies::find($id);
+
+            if(!$company) {
+                return $this->handleErrorResponse(null, "Company with ID: ". $id . "is not found to update by Admin!", 404);
+            }
+
+            $company->update([
+                "verified_at" => $request->verified_at
+            ]);
+
+            return $this->handleResponse($company, "Company with ID:" . $id . " is updated successfully!");
+        } catch (\Throwable $e) {
+            return $this->handleErrorResponse(null, $e->getMessage(), 500);
+        }
+    }
+
     public function delete($id) {
         try {
             $userId = Auth::user()->id;

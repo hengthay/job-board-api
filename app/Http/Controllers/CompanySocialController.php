@@ -24,6 +24,19 @@ class CompanySocialController extends Controller
             return $this->handleErrorResponse(null, $e->getMessage(), 500);
         }
     }
+    public function adminIndex() {
+        try {
+            $companySocials = CompanySocial::orderBy('id', 'asc')->get();
+
+            if($companySocials->isEmpty()) {
+                return $this->handleErrorResponse(null, "Company Social is empty!", 404);
+            }
+
+            return $this->handleResponse($companySocials, 'All Company Social is successfully received!');
+        } catch (\Throwable $e) {
+            return $this->handleErrorResponse(null, $e->getMessage(), 500);
+        }
+    }
     public function findCompanySocial($id) {
         try {
             $companySocials = CompanySocial::find($id);

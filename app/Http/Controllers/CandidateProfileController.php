@@ -51,9 +51,9 @@ class CandidateProfileController extends Controller
             $profile = CandidateProfile::with([
                 'user',
                 'resumes'
-            ])->where('id', $id)->get();
+            ])->where('id', $id)->first();
 
-            if($profile->isEmpty()) {
+            if(!$profile) {
                 return $this->handleErrorResponse(null, "Candidate Profile with ID:" . $id . " is not found!", 404);
             }
 

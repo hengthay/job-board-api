@@ -24,6 +24,21 @@ class UserController extends Controller
         }
     }
 
+    public function show($id) {
+        try {
+            $users = User::find($id);
+            
+            if(!$users) {
+                return $this->handleErrorResponse(null, 'User with id:'. $id . ' is not found!', 404);
+            }
+
+            // Send response back to frontend
+            return $this->handleResponse($users, 'User with id:'. $id . ' is successfully!', 200);
+        } catch (\Throwable $e) {
+            return $this->handleErrorResponse(null, $e->getMessage(), 500);
+        }
+    }
+
     public function getIndividualUser() {
         try {
             $userId = Auth::user()->id;
